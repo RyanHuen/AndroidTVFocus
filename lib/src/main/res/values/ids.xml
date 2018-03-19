@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="shadow_focus_view" type="id" />
+    <item name="ryan_focus_item_pivot_x" type="id" />
+    <item name="ryan_focus_item_pivot_y" type="id" />
+</resources>

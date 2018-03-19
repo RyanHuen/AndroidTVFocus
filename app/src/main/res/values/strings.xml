@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">AndroidTVFocus</string>
+    <string name="simple_focus">普通View Focus</string>
+    <string name="scroll_focus">滚动View Focus</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

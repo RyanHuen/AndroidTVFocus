@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        tools:context="com.ryanhuen.androidtvfocus.MainActivity">
+
+        <LinearLayout
+            android:id="@+id/switch_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/simple_view_focus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:focusable="true"
+                android:text="@string/simple_focus" />
+
+            <TextView
+                android:id="@+id/scrollable_view_focus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:focusable="true"
+                android:text="@string/scroll_focus" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/main_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <com.ryanhuen.lib.widget.ShadowFocusView
+        android:id="@+id/shadow_focus_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>
