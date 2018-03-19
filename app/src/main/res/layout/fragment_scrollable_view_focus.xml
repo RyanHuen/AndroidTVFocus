@@ -4,10 +4,8 @@
     android:layout_height="match_parent"
     tools:context="com.ryanhuen.androidtvfocus.fragment.ScrollableViewFocusFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="hello scroll view" />
-
+        android:layout_height="match_parent" />
 </FrameLayout>
