@@ -43,8 +43,4 @@
             android:layout_height="match_parent" />
     </LinearLayout>
 
-    <com.ryanhuen.lib.widget.ShadowFocusView
-        android:id="@+id/shadow_focus_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 </FrameLayout>

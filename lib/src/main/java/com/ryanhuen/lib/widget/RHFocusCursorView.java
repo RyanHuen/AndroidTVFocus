@@ -1,6 +1,6 @@
 package com.ryanhuen.lib.widget;
 
-import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -13,7 +13,7 @@ import android.view.animation.DecelerateInterpolator;
 import com.ryanhuen.lib.R;
 
 
-public class ShadowFocusView extends View {
+public class RHFocusCursorView extends View implements ValueAnimator.AnimatorUpdateListener {
     private View mFocusView;
     private View mUnFocusView;
     private int[] mFocusLocation = new int[2];
@@ -30,16 +30,21 @@ public class ShadowFocusView extends View {
 
     public static final float DEFAULT_VIEW_SCALE = 1.1f;
 
-    ObjectAnimator animScaleUp = ObjectAnimator.ofFloat(this, "ScaleUp",
-            new float[]{1.0F, DEFAULT_VIEW_SCALE}).setDuration(getResources().getInteger(R.integer.scale_up_duration));
+    ValueAnimator animScaleUp = ValueAnimator.ofFloat(1.0F, DEFAULT_VIEW_SCALE)
+            .setDuration(getResources().getInteger(R.integer.scale_up_duration));
 
-    public ShadowFocusView(Context context) {
+    public RHFocusCursorView(Context context) {
         super(context);
         init();
     }
 
-    public ShadowFocusView(Context context, AttributeSet attrs) {
+    public RHFocusCursorView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
+    }
+
+    public RHFocusCursorView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         init();
     }
 
@@ -47,12 +52,13 @@ public class ShadowFocusView extends View {
         mDrawablePaint = getResources().getDrawable(R.drawable.focus_highlight);
         mDrawableDefault = getResources().getDrawable(R.drawable.focus_highlight);
         mPaint.setColor(0xff000000);
+        animScaleUp.addUpdateListener(this);
         animScaleUp.setInterpolator(new DecelerateInterpolator());
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        drawFocusView(canvas, mFocusView, mScaleNeeded ? mScaleUp : 1.0f, mBorderNeeded);
+        drawCursorView(canvas, mFocusView, mScaleNeeded ? mScaleUp : 1.0f, mBorderNeeded);
     }
 
     View mClipView = null;
@@ -62,7 +68,7 @@ public class ShadowFocusView extends View {
         mClipView = v;
     }
 
-    public void drawFocusView(Canvas canvas, View view, float scale, boolean needBorder) {
+    public void drawCursorView(Canvas canvas, View view, float scale, boolean needBorder) {
         if (view != null) {
 
             if (null == mLocation) {
@@ -83,7 +89,7 @@ public class ShadowFocusView extends View {
             int offsetW = (int) (width * (scale - 1) / 2);
             int offsetH = (int) (height * (scale - 1) / 2);
 
-            clipCanvalRect(canvas, offsetW, offsetH);
+            clipCanvasRect(canvas, offsetW, offsetH);
 
             Rect padding = new Rect();
             mDrawablePaint.getPadding(padding);
@@ -94,14 +100,14 @@ public class ShadowFocusView extends View {
             if (null == mSpecifiedBorderView) {
                 canvas.save();
                 if (mMoveHighLightToBottom) {
-                    //边框在View底部
-                    caculateDrawConfig(canvas, view, scale, padding, left, top);
+                    //border be background
+                    caculateDrawConfig(canvas, view, scale, offsetW, offsetH, padding, left, top);
                     if (mBorderNeeded) {
                         drawWholeViewBorder(canvas, width, height, padding);
                     }
                     view.draw(canvas);
                 } else {
-                    caculateDrawConfig(canvas, view, scale, padding, left, top);
+                    caculateDrawConfig(canvas, view, scale, offsetW, offsetH, padding, left, top);
                     view.draw(canvas);
                     if (mBorderNeeded) {
                         drawWholeViewBorder(canvas, width, height, padding);
@@ -109,19 +115,19 @@ public class ShadowFocusView extends View {
                 }
                 canvas.restore();
             } else {
-                //边框在子View上
+                //border be foreground
                 if (mMoveHighLightToBottom) {
                     canvas.save();
                     drawSpecifiedDrawable(canvas, scale, padding, left, top);
                     canvas.restore();
 
                     canvas.save();
-                    caculateDrawConfig(canvas, view, scale, padding, left, top);
+                    caculateDrawConfig(canvas, view, scale, offsetW, offsetH, padding, left, top);
                     view.draw(canvas);
                     canvas.restore();
                 } else {
                     canvas.save();
-                    caculateDrawConfig(canvas, view, scale, padding, left, top);
+                    caculateDrawConfig(canvas, view, scale, offsetW, offsetH, padding, left, top);
                     view.draw(canvas);
                     canvas.restore();
 
@@ -140,7 +146,7 @@ public class ShadowFocusView extends View {
         mDrawablePaint.draw(canvas);
     }
 
-    private void caculateDrawConfig(Canvas canvas, View view, float scale, Rect padding, int left, int top) {
+    private void caculateDrawConfig(Canvas canvas, View view, float scale, int offsetW, int offsetH, Rect padding, int left, int top) {
         canvas.translate(left, top);
         float canvasPivotX = whetherViewSetPivot(view, R.id.ryan_focus_item_pivot_x, padding, scale);
         float canvasPivotY = whetherViewSetPivot(view, R.id.ryan_focus_item_pivot_y, padding, scale);
@@ -149,13 +155,13 @@ public class ShadowFocusView extends View {
     }
 
     /**
-     * 判断是否需要裁剪画布（canvas的每次restore，都会重设画布大小，需要重新裁剪）
+     * whether should clip canvas（every time restore the canvas,the clip params will be reset）
      *
-     * @param canvas  画布
-     * @param offsetW 横向缩放偏移
-     * @param offsetH 纵向缩放偏移
+     * @param canvas  canvas
+     * @param offsetW horizontal scale offset
+     * @param offsetH vertical scale offset
      */
-    private void clipCanvalRect(Canvas canvas, int offsetW, int offsetH) {
+    private void clipCanvasRect(Canvas canvas, int offsetW, int offsetH) {
         if (mClipView != null) {
             mClipView.getLocationInWindow(mClipViewLocation);
             canvas.clipRect(mClipViewLocation[0] - offsetW, mClipViewLocation[1] - offsetH,
@@ -199,19 +205,13 @@ public class ShadowFocusView extends View {
 
     public void setFocusView(View view, FocusHighlightOptions focusHighlightOptions) {
         if (focusHighlightOptions.needsSpecialBorder) {
-            //需要给特定子View绘制边框
-            //此动作表示一定需要边框，因此mBorderNeeded保留默认为true
             mSpecifiedBorderView = focusHighlightOptions.specifiedBorderView;
         } else {
-            //是否需要边框
             mBorderNeeded = focusHighlightOptions.needsBorder;
         }
         if (focusHighlightOptions.needsSpecialBackground) {
-            //是否需要特殊边框（即修改边框样式）
             mDrawablePaint = focusHighlightOptions.specifiedBackground;
-            //边框遮盖View还是View遮盖边框
             mMoveHighLightToBottom = focusHighlightOptions.needsMoveToBottom;
-            //只要设置特殊背景就表示设置边框
             mBorderNeeded = true;
         }
         mScaleNeeded = focusHighlightOptions.needsScale;
@@ -221,6 +221,7 @@ public class ShadowFocusView extends View {
             mScaleUp = 1.0f;
             animScaleUp.start();
         }
+        invalidate();
     }
 
     public void setUnFocusView(final View view) {
@@ -237,14 +238,9 @@ public class ShadowFocusView extends View {
         invalidate();
     }
 
-    /**
-     * 该方法不能被混淆
-     *
-     * @param scale
-     */
-    public void setScaleUp(float scale) {
-        mScaleUp = scale;
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
+        mScaleUp = (float) animation.getAnimatedValue();
         invalidate();
     }
-
 }

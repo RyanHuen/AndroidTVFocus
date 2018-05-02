@@ -14,7 +14,7 @@ public class FocusHighlightOptions {
         private Drawable specifiedBackground;
 
         /**
-         * @param needsScale 是否需要放大
+         * @param needsScale whether scale view
          */
         public Builder needsScale(boolean needsScale) {
             this.needsScale = needsScale;
@@ -22,7 +22,7 @@ public class FocusHighlightOptions {
         }
 
         /**
-         * @param needsBorder 是否需要绘制Focus边框
+         * @param needsBorder whether draw border
          */
         public Builder needsBorder(boolean needsBorder) {
             this.needsBorder = needsBorder;
@@ -30,9 +30,9 @@ public class FocusHighlightOptions {
         }
 
         /**
-         * 指定额外的View进行绘制边框
+         * specified an extra child view to draw border
          *
-         * @param view 要绘制边框的View
+         * @param view the child view whom be draw border
          */
         public Builder specifiedViewWithBorder(View view) {
             this.needsSpecialBorder = true;
@@ -41,10 +41,10 @@ public class FocusHighlightOptions {
         }
 
         /**
-         * 是否指定额外的Focus背景
+         * whether specified an extra background drawable to draw
          *
-         * @param specifiedBackground 额外指定的Focus Drawable
-         * @param needsMoveToBottom    Focus时是否作为背景图
+         * @param specifiedBackground extra background drawable
+         * @param needsMoveToBottom   foreground or background
          */
         public Builder specifiedBackground(Drawable specifiedBackground, boolean needsMoveToBottom) {
             this.needsSpecialBackground = true;

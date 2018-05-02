@@ -33,12 +33,23 @@ public class SampleAdapter extends RecyclerView.Adapter<SampleAdapter.SampleView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SampleViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final SampleViewHolder holder, int position) {
         if (position % 2 == 0) {
-            FocusHighlightHelper.focusHighlightView(holder.itemView, new FocusHighlightOptions());
+            holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    FocusHighlightHelper.focusHighlightView(holder.itemView, hasFocus, new FocusHighlightOptions());
+                }
+            });
         } else {
-            FocusHighlightHelper.focusHighlightView(holder.itemView, new FocusHighlightOptions.Builder()
-                    .specifiedViewWithBorder(holder.mIcon).build());
+            holder.itemView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    FocusHighlightHelper.focusHighlightView(holder.itemView, hasFocus, new FocusHighlightOptions.Builder()
+                            .specifiedViewWithBorder(holder.mIcon).build());
+                }
+            });
+
         }
     }
 

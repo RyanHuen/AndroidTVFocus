@@ -15,66 +15,29 @@
 package com.ryanhuen.lib.widget;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.ryanhuen.lib.R;
 
-/**
- * Sets up the highlighting behavior when an item gains focus.
- */
+
 public class FocusHighlightHelper {
+    public static final String TAG = FocusHighlightHelper.class.getName();
+    public static final boolean DEBUG = false;
+    public static boolean hideMetroCursorView = false;  //是否隐藏metrocursorView
+
     public static final int VIEW_SCALE_PIVOT_X_LEFT = 0;
     public static final int VIEW_SCALE_PIVOT_X_RIGHT = 1;
     public static final int VIEW_SCALE_PIVOT_Y_TOP = 0;
     public static final int VIEW_SCALE_PIVOT_Y_BOTTOM = 1;
 
-    /**
-     * @param view 对传入的View设置OnFocusChangeListener，适用于不需要自行管理Focus的情况
-     */
-    public static void focusHighlightViewDefault(View view) {
-        if (view.getContext() instanceof Activity) {
-            final ShadowFocusView cursorView = getShadowFocusView(view);
-            view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        cursorView.setFocusView(v, new FocusHighlightOptions());
-                    } else {
-                        cursorView.setUnFocusView(v);
-                    }
-                }
-            });
-        }
-    }
+    private static Dialog sDialog;
 
-    public static void focusHighlightView(View view, final FocusHighlightOptions options) {
-        if (view.getContext() instanceof Activity) {
-            final ShadowFocusView cursorView = getShadowFocusView(view);
-            view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (hasFocus) {
-                        cursorView.setFocusView(v, options);
-                    } else {
-                        cursorView.setUnFocusView(v);
-                    }
-                }
-            });
-        }
-    }
-
-    /**
-     * @param view     需要绘制动画的View
-     * @param hasFocus 传入的view是否处于Focus状态,true时绘制Focus动画，false时绘制清楚Focus动画
-     * @param options  Focus的选项
-     */
     public static void focusHighlightView(View view, boolean hasFocus, FocusHighlightOptions options) {
         if (view.getContext() instanceof Activity) {
-            Activity activity = (Activity) view.getContext();
-            final ShadowFocusView cursorView = activity.findViewById(R.id.shadow_focus_view);
-            if (cursorView == null) {
-                throw new RuntimeException("Your View's host Activity Layout didn't found MetroCursorView to Draw Focus : " + activity);
-            }
+            final RHFocusCursorView cursorView = getFocusCursorView(view);
             if (hasFocus) {
                 cursorView.setFocusView(view, options);
             } else {
@@ -83,21 +46,71 @@ public class FocusHighlightHelper {
         }
     }
 
-    private static ShadowFocusView getShadowFocusView(View view) {
-        Activity activity = (Activity) view.getContext();
-        final ShadowFocusView cursorView = activity.findViewById(R.id.shadow_focus_view);
-        if (cursorView == null) {
-            throw new RuntimeException("Your View's host Activity Layout didn't found MetroCursorView to Draw Focus" + activity);
+    public static void focusHighlightView(Dialog dialog, View view,
+                                          boolean hasFocus, FocusHighlightOptions options) {
+        sDialog = dialog;
+        final RHFocusCursorView cursorView = getFocusCursorViewFromDialogWindow(dialog);
+        if (hasFocus) {
+            cursorView.setFocusView(view, options);
+        } else {
+            cursorView.setUnFocusView(view);
         }
-        return cursorView;
+    }
+
+    private static RHFocusCursorView getFocusCursorView(View view) {
+        ViewGroup decorView;
+        if (view.getContext() instanceof Activity) {
+            decorView = (ViewGroup) ((Activity) view.getContext()).getWindow().getDecorView();
+        } else {
+            return getFocusCursorViewFromDialogWindow(sDialog);
+        }
+        RHFocusCursorView metroCursorView;
+        metroCursorView = decorView.findViewById(R.id.ryan_focus_cursor_view);
+        if (null == metroCursorView) {
+            if (DEBUG) {
+                Log.e(TAG, "didn't find MetroCursorView,we will create one");
+            }
+            metroCursorView = new RHFocusCursorView(view.getContext());
+            metroCursorView.setId(R.id.ryan_focus_cursor_view);
+            ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            decorView.addView(metroCursorView, layoutParams);
+        }
+        return metroCursorView;
+    }
+
+    private static RHFocusCursorView getFocusCursorViewFromDialogWindow(Dialog dialog) {
+        if (dialog.getWindow() != null) {
+            ViewGroup decorView = (ViewGroup) dialog.getWindow().getDecorView();
+            RHFocusCursorView metroCursorView;
+            metroCursorView = decorView.findViewById(R.id.ryan_focus_cursor_view);
+            if (null == metroCursorView) {
+                if (DEBUG) {
+                    Log.e(TAG, "didn't find MetroCursorView,we will create one");
+                }
+                metroCursorView = new RHFocusCursorView(dialog.getContext());
+                metroCursorView.setId(R.id.ryan_focus_cursor_view);
+                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                decorView.addView(metroCursorView, layoutParams);
+            }
+            return metroCursorView;
+        } else {
+            throw new RuntimeException("The Dialog which want to add CZFocusCursorView didn't get its host Window object");
+        }
     }
 
     public static void setMetroClipView(View v) {
-        getShadowFocusView(v).setClipView(v);
+        getFocusCursorView(v).setClipView(v);
     }
 
     public static void clearMetroClipView(View v) {
-        getShadowFocusView(v).setClipView(null);
-        getShadowFocusView(v).invalidate();
+        getFocusCursorView(v).setClipView(null);
+        getFocusCursorView(v).invalidate();
+    }
+
+    public static void invalidateFocusView(View view) {
+        RHFocusCursorView czFocusCursorView = getFocusCursorView(view);
+        czFocusCursorView.invalidate();
     }
 }
