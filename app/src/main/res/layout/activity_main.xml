@@ -2,7 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,7 +25,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="20dp"
                 android:focusable="true"
-                android:text="@string/simple_focus" />
+                android:text="@string/simple_focus"
+                android:textColor="@android:color/black" />
 
             <TextView
                 android:id="@+id/scrollable_view_focus"
@@ -33,9 +35,15 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="20dp"
                 android:focusable="true"
-                android:text="@string/scroll_focus" />
+                android:text="@string/scroll_focus"
+                android:textColor="@android:color/black" />
 
         </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/black" />
 
         <FrameLayout
             android:id="@+id/main_content"

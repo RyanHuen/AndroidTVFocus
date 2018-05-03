@@ -11,12 +11,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:textColor="@android:color/black"
         android:focusable="true"
         android:text="默认效果" />
 
     <TextView
         android:id="@+id/no_scale"
         android:layout_width="wrap_content"
+        android:textColor="@android:color/black"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:focusable="true"
@@ -27,6 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:textColor="@android:color/black"
         android:focusable="true"
         android:text="只放大" />
 
@@ -35,6 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:textColor="@android:color/black"
         android:focusable="true"
         android:text="更换Focus的边框效果" />
 
@@ -58,6 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="指定View绘制边框"
+            android:textColor="@android:color/black"
             android:textSize="10sp" />
     </LinearLayout>
 
@@ -66,6 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="true"
+        android:textColor="@android:color/black"
         android:text="Dialog类型" />
 
 </LinearLayout>

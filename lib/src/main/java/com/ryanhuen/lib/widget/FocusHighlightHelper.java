@@ -26,7 +26,6 @@ import com.ryanhuen.lib.R;
 public class FocusHighlightHelper {
     public static final String TAG = FocusHighlightHelper.class.getName();
     public static final boolean DEBUG = false;
-    public static boolean hideMetroCursorView = false;  //是否隐藏metrocursorView
 
     public static final int VIEW_SCALE_PIVOT_X_LEFT = 0;
     public static final int VIEW_SCALE_PIVOT_X_RIGHT = 1;
@@ -37,7 +36,7 @@ public class FocusHighlightHelper {
 
     public static void focusHighlightView(View view, boolean hasFocus, FocusHighlightOptions options) {
         if (view.getContext() instanceof Activity) {
-            final RHFocusCursorView cursorView = getFocusCursorView(view);
+            final ShadowFocusView cursorView = getFocusCursorView(view);
             if (hasFocus) {
                 cursorView.setFocusView(view, options);
             } else {
@@ -49,7 +48,7 @@ public class FocusHighlightHelper {
     public static void focusHighlightView(Dialog dialog, View view,
                                           boolean hasFocus, FocusHighlightOptions options) {
         sDialog = dialog;
-        final RHFocusCursorView cursorView = getFocusCursorViewFromDialogWindow(dialog);
+        final ShadowFocusView cursorView = getFocusCursorViewFromDialogWindow(dialog);
         if (hasFocus) {
             cursorView.setFocusView(view, options);
         } else {
@@ -57,21 +56,21 @@ public class FocusHighlightHelper {
         }
     }
 
-    private static RHFocusCursorView getFocusCursorView(View view) {
+    private static ShadowFocusView getFocusCursorView(View view) {
         ViewGroup decorView;
         if (view.getContext() instanceof Activity) {
             decorView = (ViewGroup) ((Activity) view.getContext()).getWindow().getDecorView();
         } else {
             return getFocusCursorViewFromDialogWindow(sDialog);
         }
-        RHFocusCursorView metroCursorView;
-        metroCursorView = decorView.findViewById(R.id.ryan_focus_cursor_view);
+        ShadowFocusView metroCursorView;
+        metroCursorView = decorView.findViewById(R.id.shadow_focus_view);
         if (null == metroCursorView) {
             if (DEBUG) {
                 Log.e(TAG, "didn't find MetroCursorView,we will create one");
             }
-            metroCursorView = new RHFocusCursorView(view.getContext());
-            metroCursorView.setId(R.id.ryan_focus_cursor_view);
+            metroCursorView = new ShadowFocusView(view.getContext());
+            metroCursorView.setId(R.id.shadow_focus_view);
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             decorView.addView(metroCursorView, layoutParams);
@@ -79,17 +78,17 @@ public class FocusHighlightHelper {
         return metroCursorView;
     }
 
-    private static RHFocusCursorView getFocusCursorViewFromDialogWindow(Dialog dialog) {
+    private static ShadowFocusView getFocusCursorViewFromDialogWindow(Dialog dialog) {
         if (dialog.getWindow() != null) {
             ViewGroup decorView = (ViewGroup) dialog.getWindow().getDecorView();
-            RHFocusCursorView metroCursorView;
-            metroCursorView = decorView.findViewById(R.id.ryan_focus_cursor_view);
+            ShadowFocusView metroCursorView;
+            metroCursorView = decorView.findViewById(R.id.shadow_focus_view);
             if (null == metroCursorView) {
                 if (DEBUG) {
                     Log.e(TAG, "didn't find MetroCursorView,we will create one");
                 }
-                metroCursorView = new RHFocusCursorView(dialog.getContext());
-                metroCursorView.setId(R.id.ryan_focus_cursor_view);
+                metroCursorView = new ShadowFocusView(dialog.getContext());
+                metroCursorView.setId(R.id.shadow_focus_view);
                 ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 decorView.addView(metroCursorView, layoutParams);
@@ -110,7 +109,7 @@ public class FocusHighlightHelper {
     }
 
     public static void invalidateFocusView(View view) {
-        RHFocusCursorView czFocusCursorView = getFocusCursorView(view);
+        ShadowFocusView czFocusCursorView = getFocusCursorView(view);
         czFocusCursorView.invalidate();
     }
 }

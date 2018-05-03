@@ -13,7 +13,7 @@ import android.view.animation.DecelerateInterpolator;
 import com.ryanhuen.lib.R;
 
 
-public class RHFocusCursorView extends View implements ValueAnimator.AnimatorUpdateListener {
+public class ShadowFocusView extends View implements ValueAnimator.AnimatorUpdateListener {
     private View mFocusView;
     private View mUnFocusView;
     private int[] mFocusLocation = new int[2];
@@ -33,17 +33,17 @@ public class RHFocusCursorView extends View implements ValueAnimator.AnimatorUpd
     ValueAnimator animScaleUp = ValueAnimator.ofFloat(1.0F, DEFAULT_VIEW_SCALE)
             .setDuration(getResources().getInteger(R.integer.scale_up_duration));
 
-    public RHFocusCursorView(Context context) {
+    public ShadowFocusView(Context context) {
         super(context);
         init();
     }
 
-    public RHFocusCursorView(Context context, AttributeSet attrs) {
+    public ShadowFocusView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public RHFocusCursorView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ShadowFocusView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -58,7 +58,7 @@ public class RHFocusCursorView extends View implements ValueAnimator.AnimatorUpd
 
     @Override
     protected void onDraw(Canvas canvas) {
-        drawCursorView(canvas, mFocusView, mScaleNeeded ? mScaleUp : 1.0f, mBorderNeeded);
+        drawOnShadowView(canvas, mFocusView, mScaleNeeded ? mScaleUp : 1.0f);
     }
 
     View mClipView = null;
@@ -68,7 +68,7 @@ public class RHFocusCursorView extends View implements ValueAnimator.AnimatorUpd
         mClipView = v;
     }
 
-    public void drawCursorView(Canvas canvas, View view, float scale, boolean needBorder) {
+    private void drawOnShadowView(Canvas canvas, View view, float scale) {
         if (view != null) {
 
             if (null == mLocation) {
@@ -148,8 +148,8 @@ public class RHFocusCursorView extends View implements ValueAnimator.AnimatorUpd
 
     private void caculateDrawConfig(Canvas canvas, View view, float scale, int offsetW, int offsetH, Rect padding, int left, int top) {
         canvas.translate(left, top);
-        float canvasPivotX = whetherViewSetPivot(view, R.id.ryan_focus_item_pivot_x, padding, scale);
-        float canvasPivotY = whetherViewSetPivot(view, R.id.ryan_focus_item_pivot_y, padding, scale);
+        float canvasPivotX = whetherViewSetPivot(view, R.id.shadow_focus_item_pivot_x, padding, scale);
+        float canvasPivotY = whetherViewSetPivot(view, R.id.shadow_focus_item_pivot_y, padding, scale);
         canvas.translate(canvasPivotX, canvasPivotY);
         canvas.scale(scale, scale);
     }
@@ -180,8 +180,8 @@ public class RHFocusCursorView extends View implements ValueAnimator.AnimatorUpd
         mDrawablePaint.setBounds(-padding.left, -padding.top,
                 mSpecifiedBorderView.getWidth() + padding.right,
                 mSpecifiedBorderView.getHeight() + padding.bottom);
-        float scalePivotX = whetherViewSetPivot(mSpecifiedBorderView, R.id.ryan_focus_item_pivot_x, padding, scale);
-        float scalePivotY = whetherViewSetPivot(mSpecifiedBorderView, R.id.ryan_focus_item_pivot_y, padding, scale);
+        float scalePivotX = whetherViewSetPivot(mSpecifiedBorderView, R.id.shadow_focus_item_pivot_x, padding, scale);
+        float scalePivotY = whetherViewSetPivot(mSpecifiedBorderView, R.id.shadow_focus_item_pivot_y, padding, scale);
         canvas.scale(scale, scale, scalePivotX, scalePivotY);
         mDrawablePaint.draw(canvas);
     }
