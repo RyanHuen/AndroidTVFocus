@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
+        v.setTag(R.id.shadow_focus_item_pivot_horizontal,FocusHighlightHelper.VIEW_SCALE_PIVOT_X_LEFT);
         FocusHighlightHelper.focusHighlightView(v, hasFocus, new FocusHighlightOptions());
         if (v.getId() == R.id.simple_view_focus) {
             //simple view focus

@@ -148,8 +148,8 @@ public class ShadowFocusView extends View implements ValueAnimator.AnimatorUpdat
 
     private void caculateDrawConfig(Canvas canvas, View view, float scale, int offsetW, int offsetH, Rect padding, int left, int top) {
         canvas.translate(left, top);
-        float canvasPivotX = whetherViewSetPivot(view, R.id.shadow_focus_item_pivot_x, padding, scale);
-        float canvasPivotY = whetherViewSetPivot(view, R.id.shadow_focus_item_pivot_y, padding, scale);
+        float canvasPivotX = whetherViewSetPivot(view, R.id.shadow_focus_item_pivot_horizontal, padding, scale);
+        float canvasPivotY = whetherViewSetPivot(view, R.id.shadow_focus_item_pivot_vertical, padding, scale);
         canvas.translate(canvasPivotX, canvasPivotY);
         canvas.scale(scale, scale);
     }
@@ -180,8 +180,8 @@ public class ShadowFocusView extends View implements ValueAnimator.AnimatorUpdat
         mDrawablePaint.setBounds(-padding.left, -padding.top,
                 mSpecifiedBorderView.getWidth() + padding.right,
                 mSpecifiedBorderView.getHeight() + padding.bottom);
-        float scalePivotX = whetherViewSetPivot(mSpecifiedBorderView, R.id.shadow_focus_item_pivot_x, padding, scale);
-        float scalePivotY = whetherViewSetPivot(mSpecifiedBorderView, R.id.shadow_focus_item_pivot_y, padding, scale);
+        float scalePivotX = whetherViewSetPivot(mSpecifiedBorderView, R.id.shadow_focus_item_pivot_horizontal, padding, scale);
+        float scalePivotY = whetherViewSetPivot(mSpecifiedBorderView, R.id.shadow_focus_item_pivot_vertical, padding, scale);
         canvas.scale(scale, scale, scalePivotX, scalePivotY);
         mDrawablePaint.draw(canvas);
     }
